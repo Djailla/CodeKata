@@ -64,10 +64,14 @@ with open('french.txt', 'r') as word_list:
 
             print " - ".join(value)
 
+    print "\n**** RESULT *****\n"
+
+    print "Longest list :"
     for value in max_num_list:
         print ' - '.join(value)
     print len(max_num_list[0])
 
+    print "\nLongest word :"
     for value in max_len_list:
         print ' - '.join(value)
     print len(max_len_list[0][0])
