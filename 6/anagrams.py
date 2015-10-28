@@ -8,13 +8,37 @@ http://codekata.com/kata/kata06-anagrams/
 """
 
 from collections import defaultdict
+import unicodedata
 
-with open('wordlist.txt', 'r') as word_list:
+
+def strip_accents(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s)
+                   if unicodedata.category(c) != 'Mn')
+
+
+def to_unicode(data):
+    """
+    Convert data entry to unicode
+    """
+    if type(data) == unicode:
+        return data
+    else:
+        return data.decode('utf-8')
+
+with open('french.txt', 'r') as word_list:
     d = defaultdict(list)
 
     for word in word_list.readlines():
         stripped_word = word.strip()
-        d[''.join(sorted(stripped_word.replace('\'', '').lower()))].append(stripped_word)
+        d[''.join(
+            sorted(
+                strip_accents(
+                    to_unicode(
+                        stripped_word.replace('\'', '').lower()
+                    )
+                )
+            )
+        )].append(stripped_word)
 
     max_num = 0
     max_num_list = []
