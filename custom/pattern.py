@@ -27,29 +27,36 @@ from itertools import product
 def is_match(pattern, test_string):
     pattern_dict = defaultdict(int)
 
-    # Generate the pattern sizes that fit the defined pattern
+    # Generate the pattern map that count the occurence of element in the pattern
     for char in list(pattern):
         pattern_dict[char] += 1
 
+    # From now we now how many element of the pattern to retreive in the string
     pattern_keys = pattern_dict.keys()
     pattern_sizes = []
 
+    # Iterate on every possibility of element size to fit the pattern
     for k in product(range(1, len(test_string) + 1), repeat=len(pattern_keys)):
         size = sum([idx * pattern_dict[pattern_keys[i]] for (i, idx) in enumerate(k)])
+
+        # If the size fit, keep a copy of this compositon of elements
         if size == len(test_string):
             pattern_sizes.append({pattern_keys[i] : j for i, j in enumerate(k)})
-    # print pattern_sizes
 
-    # Test this patterns against the string
+    # Then tests thes patterns against the string
     for test_pattern in pattern_sizes:
         index = 0
+        # Using defaultdict, each value of the dict will contains the
+        # the extracted string from the input with the size defined in the
+        # pattern
         test_dict = defaultdict(list)
 
         for char in list(pattern):
             test_dict[char].append(test_string[index: index + test_pattern[char]])
-
             index += test_pattern[char]
 
+        # If all the list of the default dict contains identical values
+        # it means that this pattern fit !
         if all([len(set(value)) == 1 for value in test_dict.values()]):
             print test_dict
             return True
