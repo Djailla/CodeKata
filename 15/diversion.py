@@ -17,11 +17,19 @@ n - 2 => All starting with 10
 import itertools
 
 
+def check_input(func):
+    def check_input_wrap(*args, **kwargs):
+        """wrapper"""
+        if args[0] < 1:
+            return 0
+        else:
+            return func(*args, **kwargs)
+    return check_input_wrap
+
+
+@check_input
 def get_items1(item_size):
     """Using string compare we can look for the pattern in the string"""
-    if item_size < 1:
-        return 0
-
     item_count = sum(1 for item in
                      itertools.product(['0', '1'], repeat=item_size)
                      if not '11' in ''.join(item)
@@ -29,11 +37,9 @@ def get_items1(item_size):
     return item_count
 
 
+@check_input
 def get_items2(item_size):
     """Trying to use Boolean instead of strings"""
-    if item_size < 1:
-        return 0
-
     range_size = range(item_size - 1)
 
     item_count = sum(1 for item in
@@ -43,11 +49,9 @@ def get_items2(item_size):
     return item_count
 
 
+@check_input
 def get_items3(item_size):
     """Using the real expression to calculate final value"""
-    if item_size < 1:
-        return 0
-
     item_list = [1, 2, 3]
 
     if item_size < len(item_list):
