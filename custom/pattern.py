@@ -20,24 +20,21 @@ is_match('aba', 'dogfishhorse') -> False
 Preferable use Python, and say the Big O runtime and space.
 """
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from itertools import product
 
 
 def is_match(pattern, test_string):
-    pattern_dict = defaultdict(int)
-
     # Generate the pattern map that count the occurence of element in the pattern
-    for char in list(pattern):
-        pattern_dict[char] += 1
+    pattern_counter = Counter(pattern)
 
     # From now we now how many element of the pattern to retreive in the string
-    pattern_keys = pattern_dict.keys()
+    pattern_keys = pattern_counter.keys()
     pattern_sizes = []
 
     # Iterate on every possibility of element size to fit the pattern
     for k in product(range(1, len(test_string) + 1), repeat=len(pattern_keys)):
-        size = sum([idx * pattern_dict[pattern_keys[i]] for (i, idx) in enumerate(k)])
+        size = sum([idx * pattern_counter[pattern_keys[i]] for (i, idx) in enumerate(k)])
 
         # If the size fit, keep a copy of this compositon of elements
         if size == len(test_string):
@@ -58,7 +55,7 @@ def is_match(pattern, test_string):
         # If all the list of the default dict contains identical values
         # it means that this pattern fit !
         if all([len(set(value)) == 1 for value in test_dict.values()]):
-            print test_dict
+            print test_dict.items()
             return True
 
     return False
