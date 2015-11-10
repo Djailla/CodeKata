@@ -32,12 +32,17 @@ def is_match(pattern, test_string):
     pattern_keys = pattern_counter.keys()
     pattern_sizes = []
 
+    test_string_len = len(test_string)
+    pattern_keys_len = len(pattern_keys)
+
     # Iterate on every possibility of element size to fit the pattern
-    for k in product(range(1, len(test_string) + 1), repeat=len(pattern_keys)):
+    for k in product(range(1, test_string_len - pattern_keys_len + 2),
+                     repeat=pattern_keys_len):
+
         size = sum([idx * pattern_counter[pattern_keys[i]] for (i, idx) in enumerate(k)])
 
         # If the size fit, keep a copy of this compositon of elements
-        if size == len(test_string):
+        if size == test_string_len:
             pattern_sizes.append({pattern_keys[i] : j for i, j in enumerate(k)})
 
     # Then tests thes patterns against the string
@@ -67,3 +72,10 @@ assert(is_match('ab', 'acdefghijk') is True)
 assert(is_match('aba', 'dogfishfish') is False)
 assert(is_match('aba', 'dogfishhorse') is False)
 assert(is_match('abcba', 'dogfishhorsefishdog') is True)
+
+def do_it():
+    for i in xrange(50):
+        is_match('abcba', 'dogfishhorsefishdog')
+
+import profile
+profile.run('do_it()')
