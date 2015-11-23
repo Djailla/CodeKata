@@ -72,6 +72,14 @@ assert(is_match('ab', 'acdefghijk') is True)
 assert(is_match('aba', 'dogfishfish') is False)
 assert(is_match('aba', 'dogfishhorse') is False)
 assert(is_match('abcba', 'dogfishhorsefishdog') is True)
+assert(is_match('aaaaa', 'marcmarcmarcmarcmarc') is True)
+assert(
+    is_match(
+        'aaaaabbbbb',
+        'marcmarcmarcmarcmarcbobbobbobbobbob'
+    ) is True
+)
+
 
 def do_it():
     for i in xrange(50):
