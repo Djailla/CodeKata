@@ -25,7 +25,7 @@ def to_unicode(data):
     else:
         return data.decode('utf-8')
 
-with open('french.txt', 'r') as word_list:
+with open('../common/french.txt', 'r') as word_list:
     d = defaultdict(list)
 
     for word in word_list.readlines():
