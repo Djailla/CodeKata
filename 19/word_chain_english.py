@@ -6,31 +6,29 @@ Working on exercice :
 
 http://codekata.com/kata/kata19-word-chains/
 """
-
+from Queue import PriorityQueue
+DEST_STR = 'gold'
 INPUT_STR = 'lead'
 INPUT_STR_LEN = len(INPUT_STR)
 SAME_LEN_SET = set()
 
-DEST_STR = 'gold'
-
 
 def get_close_str(input_str):
     """Generate a set of word that can be the next step in the word chain"""
-    matching_word = set()
+    matching_words = set()
 
     for word in SAME_LEN_SET:
         count = 0
         for i in range(INPUT_STR_LEN):
-            # print '%s <=> %s' % (word[i], input_str[i])
             if word[i] != input_str[i]:
                 count += 1
                 if count >= 2:
                     break
         if count >= 2:
             continue
-        matching_word.add(word)
-    matching_word.remove(input_str)
-    return matching_word
+        matching_words.add(word)
+    matching_words.remove(input_str)
+    return matching_words
 
 
 def get_score(scr_str, dest_str):
@@ -38,18 +36,9 @@ def get_score(scr_str, dest_str):
     count = 0
 
     for i in range(INPUT_STR_LEN):
-        # print '%s <=> %s' % (word[i], input_str[i])
         if scr_str[i] == dest_str[i]:
             count += 1
     return count
-
-
-def get_close_score_dict(close_set, dest_str):
-    """Generate a dict with words and associated score"""
-    out_dict = {}
-    for word in close_set:
-        out_dict[word] = get_score(word, dest_str)
-    return out_dict
 
 # Basic check
 if INPUT_STR_LEN != len(DEST_STR):
@@ -75,21 +64,28 @@ if DEST_STR not in SAME_LEN_SET:
     exit(0)
 
 
-print "\n**** RESULT *****\n"
+word_queue = PriorityQueue()
+word_queue.put(INPUT_STR, 0)
+came_from = {}
+came_from[INPUT_STR] = None
 
-current_set = set()
-new_set = get_close_str(INPUT_STR)
+while not word_queue.empty():
+    current = word_queue.get()
 
-sorted_dict = sorted([
-    (value, key)
-    for (key, value)
-    in get_close_score_dict(new_set, DEST_STR).items()
-], reverse=True)
+    if current == DEST_STR:
+        break
 
+    for new_word in get_close_str(current):
+        if new_word not in came_from:
+            score = get_score(new_word, DEST_STR)
+            word_queue.put(new_word, score)
+            came_from[new_word] = current
 
-print "Matching words :"
-for (score, word) in sorted_dict:
-    print ' - %s (score : %d)' % (word, score)
-print len(new_set)
+current = DEST_STR
+path = [current]
+while current != INPUT_STR:
+    current = came_from[current]
+    path.append(current)
+path.reverse()
 
-# print "FOUND"
+print '\n'.join(path)
