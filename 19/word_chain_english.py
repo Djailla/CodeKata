@@ -6,11 +6,27 @@ Working on exercice :
 
 http://codekata.com/kata/kata19-word-chains/
 """
-from Queue import PriorityQueue
+
 DEST_STR = 'gold'
 INPUT_STR = 'lead'
 INPUT_STR_LEN = len(INPUT_STR)
 SAME_LEN_SET = set()
+
+import heapq
+
+
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+
+    def empty(self):
+        return len(self.elements) == 0
+
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+
+    def get(self):
+        return heapq.heappop(self.elements)[1]
 
 
 def get_close_str(input_str):
@@ -33,11 +49,11 @@ def get_close_str(input_str):
 
 def get_score(scr_str, dest_str):
     """Get the proximity score with the destination word"""
-    count = 0
+    count = INPUT_STR_LEN
 
     for i in range(INPUT_STR_LEN):
         if scr_str[i] == dest_str[i]:
-            count += 1
+            count -= 1
     return count
 
 # Basic check
@@ -67,7 +83,9 @@ if DEST_STR not in SAME_LEN_SET:
 word_queue = PriorityQueue()
 word_queue.put(INPUT_STR, 0)
 came_from = {}
+cost_so_far = {}
 came_from[INPUT_STR] = None
+cost_so_far[INPUT_STR] = 0
 
 while not word_queue.empty():
     current = word_queue.get()
@@ -75,11 +93,13 @@ while not word_queue.empty():
     if current == DEST_STR:
         break
 
-    for new_word in get_close_str(current):
-        if new_word not in came_from:
-            score = get_score(new_word, DEST_STR)
-            word_queue.put(new_word, score)
-            came_from[new_word] = current
+    for next in get_close_str(current):
+        new_cost = cost_so_far[current] + 1
+        if next not in cost_so_far or new_cost < cost_so_far[next]:
+            cost_so_far[next] = new_cost
+            priority = new_cost + get_score(next, DEST_STR)
+            word_queue.put(next, priority)
+            came_from[next] = current
 
 current = DEST_STR
 path = [current]
