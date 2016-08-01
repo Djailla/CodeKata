@@ -36,6 +36,7 @@ def get_clean_word(word):
 
 def main(lang, algo, word1, word2):
     word_set = set()
+    word_dict = {}
 
     clean_word1 = get_clean_word(word1)
     len_clean_word1 = len(clean_word1)
@@ -62,6 +63,7 @@ def main(lang, algo, word1, word2):
             )
             if len(clean_word) == len_clean_word1:
                 word_set.add(clean_word)
+                word_dict[clean_word] = word.strip()
 
     # Check if words exists
     if clean_word1 not in word_set:
@@ -78,7 +80,9 @@ def main(lang, algo, word1, word2):
         word_set
     )
 
-    print ' -> '.join(path)
+    real_words = [word_dict[word] for word in path]
+
+    print ' -> '.join(real_words)
 
 if __name__ == "__main__":
     usage = "usage: %prog [options] word1 word2"
