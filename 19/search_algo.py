@@ -74,14 +74,7 @@ def a_star_algo(clean_word1, len_clean_word1,
                 word_queue.put(next, priority)
                 came_from[next] = current
 
-    current = clean_word2
-    path = [current]
-    while current != clean_word1:
-        current = came_from[current]
-        path.append(current)
-    path.reverse()
-
-    return path
+    return came_from
 
 
 def greedy_best_first_algo(clean_word1, len_clean_word1,
@@ -104,14 +97,7 @@ def greedy_best_first_algo(clean_word1, len_clean_word1,
                 word_queue.put(next, priority)
                 came_from[next] = current
 
-    current = clean_word2
-    path = [current]
-    while current != clean_word1:
-        current = came_from[current]
-        path.append(current)
-    path.reverse()
-
-    return path
+    return came_from
 
 
 def dijkstra_algo(clean_word1, len_clean_word1,
@@ -138,14 +124,7 @@ def dijkstra_algo(clean_word1, len_clean_word1,
                 word_queue.put(next, priority)
                 came_from[next] = current
 
-    current = clean_word2
-    path = [current]
-    while current != clean_word1:
-        current = came_from[current]
-        path.append(current)
-    path.reverse()
-
-    return path
+    return came_from
 
 
 ALGO_DICT = {
@@ -153,3 +132,23 @@ ALGO_DICT = {
     'greedy': greedy_best_first_algo,
     'dijkstra': dijkstra_algo
 }
+
+
+def get_path(clean_word1, clean_word2, algo, word_set):
+
+    came_from = ALGO_DICT[algo](
+        clean_word1, len(clean_word1),
+        clean_word2, len(clean_word2),
+        word_set
+    )
+
+    current = clean_word2
+    path = [current]
+    while current != clean_word1:
+        if not current in came_from:
+            return
+        current = came_from[current]
+        path.append(current)
+    path.reverse()
+
+    return path
